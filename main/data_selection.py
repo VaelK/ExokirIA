@@ -40,7 +40,6 @@ def fun_compute(data, ind_selected, figs, _, sources_res, all_data):
         sources_res = [sources_res]
     input_gam = ['PV Power (kW)', 'PV Voltage (V)', 'Frequency (Hz)', 'Cos Phi', 'Irrad_Horiz (W/m2)', 'Temp_Amb (C)']
     output_gam = all_data['Output Apparent Power (kVA)'] / all_data['PV Power (kW)']
-    source_gam = []
     for k, val in ind_selected.items():
         dmV1 = ModelingV1(all_data.loc[all_data.index[val], input_gam], output_gam.iloc[val],
                       spline_search_space=np.arange(5, 51, 5),
