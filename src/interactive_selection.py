@@ -1,7 +1,6 @@
-from bokeh.plotting import figure, Figure
+from bokeh.plotting import figure
 from bokeh.models import Button
 from bokeh.layouts import column, row, gridplot, Spacer
-from bokeh.events import PressUp
 import time
 
 
@@ -99,9 +98,9 @@ class InteractiveSelection:
 
         # Plotting selection plot
         if self.extra_args_fun_init_plot is not None:
-            self.source_sel, self.source_res = self.fun_init_plot(self.data, self.figs, *self.extra_args_fun_init_plot)
+            self.source_sel, self.source_res = self.fun_init_plot(self, *self.extra_args_fun_init_plot)
         else:
-            self.source_sel, self.source_res = self.fun_init_plot(self.data, self.figs)
+            self.source_sel, self.source_res = self.fun_init_plot(self)
         self.source_sel.selected.on_change('indices', self.update_sel)
         for s in self.source_res:
             if isinstance(s, list):
@@ -123,10 +122,9 @@ class InteractiveSelection:
 
     def refresh_plot(self):
         if self.extra_args_fun_update_sel is not None:
-            self.fun_update_sel(self.data, self.ind_selected, self.source_sel, self.source_res,
-                                *self.extra_args_fun_update_sel)
+            self.fun_update_sel(self, *self.extra_args_fun_update_sel)
         else:
-            self.fun_update_sel(self.data, self.ind_selected, self.source_sel, self.source_res)
+            self.fun_update_sel(self)
 
     def callback_del(self):
         """
@@ -141,7 +139,7 @@ class InteractiveSelection:
         :return:
         """
         self.current_group = self.current_group - 1
-        self.source_sel.selected.indices = self.ind_selected[self.current_group]
+        self.source_sel.selected.indices = list(self.ind_selected[self.current_group])
         if self.current_group == 0:
             self.prec_butt.disabled = True
         else:
@@ -155,7 +153,7 @@ class InteractiveSelection:
         self.current_group = self.current_group + 1
         if self.current_group not in self.ind_selected.keys():
             self.ind_selected[self.current_group] = []
-        self.source_sel.selected.indices = self.ind_selected[self.current_group]
+        self.source_sel.selected.indices = list(self.ind_selected[self.current_group])
         self.prec_butt.disabled = False
 
     def update_sel(self, attr, old, new):
